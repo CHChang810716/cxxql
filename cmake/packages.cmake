@@ -4,4 +4,7 @@ if(BUILD_TEST)
     hunter_add_package(GTest)
     find_package(GTest CONFIG REQUIRED)
 endif()
+hunter_add_package(fmt)
+find_package(fmt CONFIG REQUIRED)
+
 find_package(Threads REQUIRED)
