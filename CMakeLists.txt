@@ -20,6 +20,8 @@ project(CppProjectTemplate
 option(BUILD_TEST   "Build project with test"   OFF)
 option(INSTALL_DEPS "Install dependensies"      OFF)
 
+set(CMAKE_CXX_STANDARD 17)
+
 include(cmake/packages.cmake)
 include(cmake/src.cmake)
 include(cmake/ide.cmake)
