@@ -17,11 +17,11 @@ TEST(expr_condition, condition) {
   EXPECT_TRUE(cxxql::expr::is_bin_expr_v<decltype(bexpr1)>);
   EXPECT_TRUE(cxxql::expr::is_bin_expr_v<decltype(bexpr2)>);
 
-  EXPECT_EQ(bexpr2.oper, cxxql::expr::cond_oper::AND);
-  EXPECT_EQ(bexpr2.left().oper, cxxql::expr::cond_oper::EQ);
+  EXPECT_EQ(bexpr2.oper, cxxql::expr::bin_oper::AND);
+  EXPECT_EQ(bexpr2.left().oper, cxxql::expr::bin_oper::EQ);
   EXPECT_EQ(bexpr2.left().left(), "asdf");
   EXPECT_EQ(cxxql::expr::get_col_full_name(bexpr2.left().right()), "User.id");
-  EXPECT_EQ(bexpr2.right().oper, cxxql::expr::cond_oper::NE);
+  EXPECT_EQ(bexpr2.right().oper, cxxql::expr::bin_oper::NE);
   EXPECT_EQ(cxxql::expr::get_col_full_name(bexpr2.right().left()), "Article.id" );
   EXPECT_EQ(bexpr2.right().right(), 0);
 

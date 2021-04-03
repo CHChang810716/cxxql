@@ -6,17 +6,22 @@
   auto __cxxql_col(const decltype(t.c)& col) { \
     const auto& tab = t; \
     struct { \
-      using cxxtype = cxxql::cxxtype_t<decltype(t.c)::type>; \
+      using cxxqltype = typename decltype(t.c)::type; \
+      using cxxtype = cxxql::cxxtype_t<cxxqltype>; \
       cxxtype           c; \
       const std::string __cxxql_name; \
       decltype(tab)     __cxxql_table; \
     } res {{}, #c, tab}; \
     return res; \
   }
-#define CXXQL_TABLE(table, ...) \
+#define CXXQL_TAB_DOT_COL(t, c)  ,t.c
+#define CXXQL_TABLE(table, col0, ...) \
   auto __cxxql_table_name(const decltype(table)& t) { return #table; } \
+  auto __cxxql_table_cols(const decltype(table)& t) { return std::make_tuple( \
+    table.col0 AVALON_CTX_FOREACH(CXXQL_TAB_DOT_COL, table, __VA_ARGS__) \
+  );} \
+  CXXQL_COL(table, col0) \
   AVALON_CTX_FOREACH(CXXQL_COL, table, __VA_ARGS__)
-
 namespace cxxql::expr {
 struct col_design {};
 

@@ -2,7 +2,7 @@
 #include <string>
 #include <avalon/macro/foreach.hpp>
 #include <cxxql/type.hpp>
-#include "table.hpp"
+#include <cxxql/table.hpp>
 
 namespace cxxql::expr {
 
@@ -41,7 +41,7 @@ auto col_design_to_col(const ColDng& col_dng) {
 }
 
 template<class Col>
-auto get_table_from_col(const Col& col) {
+auto& get_table_from_col(const Col& col) {
   if constexpr(std::is_convertible_v<Col, col_design>) {
     return __cxxql_col(col).__cxxql_table;
   } else {
@@ -52,7 +52,7 @@ auto get_table_from_col(const Col& col) {
 struct dummy_table {};
 
 template<class T>
-auto col_to_table(const T& o) {
+auto& col_to_table(const T& o) {
   if constexpr(std::is_same_v<T, std::string>) { // column specify in string, not ORM
     return dummy_table {};
   } else {
@@ -60,20 +60,45 @@ auto col_to_table(const T& o) {
   }
 }
 
+template<class Table>
+auto get_table_cols(const Table& t) {
+  return __cxxql_table_cols(t);
+}
+
 template<class Col> 
 using type_col_to_table_t = std::remove_cv_t<
   decltype(get_table_from_col(Col{}))
 >;
 
-template<class Col, class = std::enable_if_t<
-  std::is_convertible_v<Col, col_design>
->>
-using col_value_cxx_t = typename std::remove_cv_t<decltype(__cxxql_col(Col{}))>::cxxtype;
+template<
+  class Col, 
+  bool is_col_design = std::is_convertible_v<Col, col_design>
+>
+struct col_value_cxx {
+  using type = typename Col::cxxtype;
+};
+template<class Col>
+struct col_value_cxx<Col, true> {
+  using type = typename std::remove_cv_t<
+    decltype(__cxxql_col(Col{}))
+  >::cxxtype;
+};
 
-template<class Col, class = std::enable_if_t<
-  !std::is_convertible_v<Col, col_design>
->>
-using col_value_cxx_t = typename Col::cxxtype;
+template<class Col>
+using col_value_cxx_t = typename col_value_cxx<
+  Col, 
+  std::is_convertible_v<Col, col_design>
+>::type;
+
+// template<class Col, class = std::enable_if_t<
+//   std::is_convertible_v<Col, col_design>
+// >>
+// using col_value_cxx_t = typename std::remove_cv_t<decltype(__cxxql_col(Col{}))>::cxxtype;
+// 
+// template<class Col, class = std::enable_if_t<
+//   !std::is_convertible_v<Col, col_design>
+// >>
+// using col_value_cxx_t = typename Col::cxxtype;
 
 
 }

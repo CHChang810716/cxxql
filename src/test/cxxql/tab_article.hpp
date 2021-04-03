@@ -1,16 +1,16 @@
 #pragma once
 #include <cstdint>
 #include <cxxql/type.hpp>
-#include <cxxql/expr/table.hpp>
+#include <cxxql/table.hpp>
 
 struct {
   struct : cxxql::expr::col_design {
-    using type = std::uint64_t;
+    using type = cxxql::bigint;
     bool is_primary     {true};
     bool auto_increment  {true};
   } id;
   struct : cxxql::expr::col_design {
-    using type = std::uint64_t;
+    using type = cxxql::bigint;
     bool is_primary     {true};
     bool auto_increment  {true};
   } author;
