@@ -7,4 +7,8 @@ endif()
 hunter_add_package(fmt)
 find_package(fmt CONFIG REQUIRED)
 
+if(USE_SQLITE)
+    hunter_add_package(sqlite3)
+    find_package(sqlite3 CONFIG REQUIRED)
+endif()
 find_package(Threads REQUIRED)

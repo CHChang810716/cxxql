@@ -8,10 +8,17 @@ TEST(expr_select, select) {
   EXPECT_EQ(cxxql::expr::get_col_name(std::get<1>(expr.cols)), "name");
   EXPECT_TRUE((std::is_same_v<decltype(expr.cond), cxxql::expr::empty_where>));
   EXPECT_EQ(cxxql::expr::get_table_name(std::get<0>(expr.tables)), "User");
+  auto re = expr.make_result_elem();
+  re.set(42, "John");
+  EXPECT_EQ(re.id, 42);
+  EXPECT_EQ(re.name, "John");
 }
 TEST(expr_select, select_where) {
   auto expr = cxxql::expr::select(User.id, User.name).where(User.name == "John");
   EXPECT_EQ(expr.cond.expr.oper, cxxql::expr::bin_oper::EQ);
   EXPECT_EQ(cxxql::expr::get_col_name(expr.cond.expr.left()), "name");
   EXPECT_EQ(expr.cond.expr.right(), "John");
+  auto re = expr.make_result_elem();
+  re.id;
+  re.name;
 }

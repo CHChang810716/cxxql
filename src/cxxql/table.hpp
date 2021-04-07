@@ -8,6 +8,7 @@
     struct { \
       using cxxqltype = typename decltype(t.c)::type; \
       using cxxtype = cxxql::cxxtype_t<cxxqltype>; \
+      void set_col(cxxtype&& v) { c = std::move(v); } \
       cxxtype           c; \
       const std::string __cxxql_name; \
       decltype(tab)     __cxxql_table; \

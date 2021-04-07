@@ -7,11 +7,56 @@
 #include "utils.hpp"
 #include "condition.hpp"
 namespace cxxql::expr {
+
+template<class ColDesign, class = std::enable_if_t<
+  std::is_convertible_v<ColDesign, col_design>
+>>
+struct col_design_to_col_type {
+  using type = decltype(col_design_to_col(ColDesign{}));
+};
+
+template<class ColDesign>
+using col_design_to_col_t = typename col_design_to_col_type<ColDesign>::type;
+
+template<class ColDesignTuple>
+struct select_result_elem_t
+{};
+
+template<class... ColDesigns>
+struct select_result_elem_t<std::tuple<ColDesigns...>>
+: public col_design_to_col_t<ColDesigns>...
+{
+  auto set(col_value_cxx_t<ColDesigns>&&... v) {
+    auto a = {set_col<ColDesigns>(std::move(v))...};
+  }
+  template<class ColDesign>
+  auto set_col(col_value_cxx_t<ColDesign>&& v) {
+    static_cast<col_design_to_col_t<ColDesign>&>(*this).set_col(std::move(v));
+    return 0;
+  }
+private:
+};
+
 template<class Cols, class Tables, class Where = empty_where>
 struct select_base_t {
+  using result_elem_t = select_result_elem_t<Cols>;
+
+  auto make_result_elem() const {
+    return make_result_elem_impl(
+      std::make_integer_sequence<std::size_t, std::tuple_size_v<Cols>>()
+    );
+  }  
+
   Cols    cols;
   Tables  tables;
   Where   cond;
+private:
+  template<class Int, Int... i>
+  inline auto make_result_elem_impl(
+    std::integer_sequence<Int, i...> is
+  ) const {
+    return result_elem_t {col_design_to_col(std::get<i>(cols))...};
+  }
 };
 
 template<class Cols, class Tables, class Where = empty_where>

@@ -19,6 +19,7 @@ project(CppProjectTemplate
 )
 option(BUILD_TEST   "Build project with test"   OFF)
 option(INSTALL_DEPS "Install dependensies"      OFF)
+option(USE_SQLITE   "Use sqlite"                OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 
