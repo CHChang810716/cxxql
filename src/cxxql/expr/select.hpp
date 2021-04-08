@@ -6,6 +6,8 @@
 #include <unordered_set>
 #include "utils.hpp"
 #include "condition.hpp"
+#include <avalon/lexical_cast.hpp>
+#include <avalon/mp/identity.hpp>
 namespace cxxql::expr {
 
 template<class ColDesign, class = std::enable_if_t<
@@ -26,6 +28,24 @@ template<class... ColDesigns>
 struct select_result_elem_t<std::tuple<ColDesigns...>>
 : public col_design_to_col_t<ColDesigns>...
 {
+  static constexpr std::size_t col_num = sizeof...(ColDesigns);
+
+  using col_d_tuple = std::tuple<ColDesigns...>;
+
+  template<std::size_t i>
+  using col_cxxtype = col_value_cxx_t<std::tuple_element_t<i, col_d_tuple>>;
+
+  template<std::size_t i>
+  using col_cxxqltype = typename std::tuple_element_t<i, col_d_tuple>::type;
+
+
+  auto set_from_strs(
+    avalon::mp::type_replace_t<ColDesigns, const std::string&>... strs
+  ) {
+    return set(
+      avalon::lexical_cast<col_value_cxx_t<ColDesigns>>(strs)...
+    );
+  }
   auto set(col_value_cxx_t<ColDesigns>&&... v) {
     auto a = {set_col<ColDesigns>(std::move(v))...};
   }
