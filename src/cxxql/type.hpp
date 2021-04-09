@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 namespace cxxql {
 
 template<std::size_t size>

@@ -16,6 +16,11 @@ struct dataset_range : public ranges::view_facade<
   void next() {
     core_.next();
   }
+#ifdef CXXQL_TEST
+  Core& get_core() {
+    return core_;
+  }
+#endif
 private:
   Core core_;
 };

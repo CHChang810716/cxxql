@@ -7,7 +7,7 @@ TEST(to_sql_test, to_sql_str) {
   namespace cq = cxxql;
   dummy_driver dd;
   std::cout << 
-    cq::to_sqlstr(
+    cq::to_sql(
       dd,
       ce::create_table(User)
     )

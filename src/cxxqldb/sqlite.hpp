@@ -60,7 +60,10 @@ struct db {
     if(ec != SQLITE_OK) {
       throw std::runtime_error("sqlite db select failed");
     }
-    dataset_range<MakeResultElem> dr {stmt, std::forward<MakeResultElem>(make_result_elem)};
+    dataset_range<MakeResultElem> dr {
+      std::move(stmt), 
+      std::forward<MakeResultElem>(make_result_elem)
+    };
     return dr;
   }
 private:

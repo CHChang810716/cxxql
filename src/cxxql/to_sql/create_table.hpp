@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 #include "utils.hpp"
 #include "type.hpp"
-namespace cxxql::to_sql {
+namespace cxxql::to_sql_ns {
 
 template<class Driver, class Tab, class... ColElemStrs>
 std::string create_table(

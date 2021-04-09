@@ -2,6 +2,8 @@
 #include <string>
 #include <avalon/macro/foreach.hpp>
 #include <cxxql/type.hpp>
+#include <tuple>
+#include <utility>
 #define CXXQL_COL(t, c) \
   auto __cxxql_col(const decltype(t.c)& col) { \
     const auto& tab = t; \

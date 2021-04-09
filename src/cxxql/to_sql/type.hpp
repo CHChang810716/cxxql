@@ -8,7 +8,7 @@
     return expr; \
   }
 
-namespace cxxql::to_sql {
+namespace cxxql::to_sql_ns {
 
 template<std::size_t size>
 CXXQL_TYPE_TO_SQL(
