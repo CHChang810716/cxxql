@@ -1,8 +1,9 @@
 #include <cxxql/to_sql.hpp>
 #include <gtest/gtest.h>
 #include "tab_user.hpp"
+#include "tab_article.hpp"
 struct dummy_driver {};
-TEST(to_sql_test, to_sql_str) {
+TEST(to_sql_test, create_table) {
   namespace ce = cxxql::expr;
   namespace cq = cxxql;
   dummy_driver dd;
@@ -10,6 +11,16 @@ TEST(to_sql_test, to_sql_str) {
     cq::to_sql(
       dd,
       ce::create_table(User)
+    )
+  << std::endl;
+}
+TEST(to_sql_test, select) {
+  namespace ce = cxxql::expr;
+  namespace cq = cxxql;
+  dummy_driver dd;
+  std::cout << 
+    cq::to_sql(
+      dd, ce::select(User.name, Article.author).where(User.id == Article.author)
     )
   << std::endl;
 }

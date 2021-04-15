@@ -40,11 +40,48 @@ template<class T>
 constexpr bool is_bin_expr_v = is_bin_expr<T>::value;
 
 template<class T>
-auto make_bin_opnd(const T& o) {
-  if constexpr(std::is_convertible_v<T, col_design>) {
-    return col_design_to_col(o);
-  } else {
-    return o;
+decltype(auto) make_bin_opnd(T&& o) {
+  return std::forward<T>(o);
+}
+}
+#define CXXQL_EXPR_BOP(op, sym) \
+  template<class CD0, class CD1,  \
+    class C0Check = std::enable_if_t< \
+      (cxxql::is_col_design_type_v<CD0> || \
+        cxxql::expr::is_bin_expr_v<CD0>) || \
+      (cxxql::is_col_design_type_v<CD1> || \
+        cxxql::expr::is_bin_expr_v<CD1>) \
+    > \
+  > \
+  auto operator op(const CD0& cd0, const CD1& cd1) { \
+    auto cols = std::make_tuple( \
+      cxxql::expr::make_bin_opnd(cd0), \
+      cxxql::expr::make_bin_opnd(cd1) \
+    ); \
+    return cxxql::expr::bin_expr<decltype(cols)>{sym, std::move(cols)}; \
   }
-}
-}
+#define CXXQL_EXPR_BOP_MEM(op, sym) \
+  template<class CD0,  \
+    class C0Check = std::enable_if_t< \
+      (cxxql::is_col_design_type_v<CD0> || \
+        cxxql::expr::is_bin_expr_v<CD0>) \
+    > \
+  > \
+  auto operator op(const CD0& cd0) { \
+    auto cols = std::make_tuple( \
+      cxxql::expr::make_bin_opnd(*this), \
+      cxxql::expr::make_bin_opnd(cd0) \
+    ); \
+    return cxxql::expr::bin_expr<decltype(cols)>{sym, std::move(cols)}; \
+  }
+
+
+CXXQL_EXPR_BOP(==, cxxql::expr::bin_oper::EQ )
+CXXQL_EXPR_BOP(!=, cxxql::expr::bin_oper::NE )
+CXXQL_EXPR_BOP(> , cxxql::expr::bin_oper::GT )
+CXXQL_EXPR_BOP(>=, cxxql::expr::bin_oper::GE )
+CXXQL_EXPR_BOP(< , cxxql::expr::bin_oper::LT )
+CXXQL_EXPR_BOP(<=, cxxql::expr::bin_oper::LE )
+CXXQL_EXPR_BOP(||, cxxql::expr::bin_oper::OR )
+CXXQL_EXPR_BOP(&&, cxxql::expr::bin_oper::AND)
+CXXQL_EXPR_BOP(<<, cxxql::expr::bin_oper::ASN)

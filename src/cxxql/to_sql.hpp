@@ -4,6 +4,7 @@
 #include <avalon/tuple.hpp>
 #include "to_sql/create_table.hpp"
 #include "to_sql/type.hpp"
+#include "to_sql/select.hpp"
 namespace cxxql {
 
 template<class Driver, class Tab>
@@ -25,7 +26,11 @@ auto to_sql(Driver& driver, const cxxql::expr::create_table_t<Tab>& expr) {
 }
 template<class Driver, class Cols, class Tables, class Where>
 auto to_sql(Driver& driver, const cxxql::expr::select_t<Cols, Tables, Where>& expr) {
-  
+  return to_sql_ns::select(driver, 
+    avalon::tuple::trans(expr.cols, expr::get_col_full_name),
+    avalon::tuple::trans(expr.tables, expr::get_table_name),
+    to_sql_ns::where(expr.cond)
+  ); 
 }
 
 }

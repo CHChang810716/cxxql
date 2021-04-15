@@ -11,7 +11,7 @@
 namespace cxxql::expr {
 
 template<class ColDesign, class = std::enable_if_t<
-  std::is_convertible_v<ColDesign, col_design>
+  cxxql::is_col_design_type_v<ColDesign>
 >>
 struct col_design_to_col_type {
   using type = decltype(col_design_to_col(ColDesign{}));

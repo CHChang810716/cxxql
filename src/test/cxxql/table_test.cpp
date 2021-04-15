@@ -11,4 +11,6 @@ TEST(cxxql_expr, table_expr) {
   auto cols = get_table_cols(User);
   EXPECT_EQ(get_col_name(std::get<0>(cols)), "id");
   EXPECT_EQ(get_col_name(std::get<1>(cols)), "name");
+  EXPECT_TRUE(cxxql::is_col_design_v(User.id));
+  EXPECT_FALSE(cxxql::is_col_design_v(0));
 }

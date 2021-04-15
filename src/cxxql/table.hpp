@@ -4,7 +4,9 @@
 #include <cxxql/type.hpp>
 #include <tuple>
 #include <utility>
-#define CXXQL_COL(t, c) \
+#include <cxxql/expr/col_design.hpp>
+#include <cxxql/expr/bin_expr.hpp>
+#define CXXQL_COL_FUNC(t, c) \
   auto __cxxql_col(const decltype(t.c)& col) { \
     const auto& tab = t; \
     struct { \
@@ -23,9 +25,10 @@
   auto __cxxql_table_cols(const decltype(table)& t) { return std::make_tuple( \
     table.col0 AVALON_CTX_FOREACH(CXXQL_TAB_DOT_COL, table, __VA_ARGS__) \
   );} \
-  CXXQL_COL(table, col0) \
-  AVALON_CTX_FOREACH(CXXQL_COL, table, __VA_ARGS__)
-namespace cxxql::expr {
-struct col_design {};
-
-}
+  CXXQL_COL_FUNC(table, col0) \
+  AVALON_CTX_FOREACH(CXXQL_COL_FUNC, table, __VA_ARGS__)
+  
+#define CXXQL_COL(t) \
+  using type = t; \
+  bool __cxxql_col_test; \
+  CXXQL_EXPR_BOP_MEM(=, cxxql::expr::bin_oper::ASN)

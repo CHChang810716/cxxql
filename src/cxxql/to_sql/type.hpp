@@ -24,7 +24,7 @@ CXXQL_TYPE_TO_SQL(cxxql::real,     "REAL")
 
 template<class Col>
 auto col_type(const Col& col) {
-  if constexpr(std::is_convertible_v<Col, expr::col_design>) {
+  if constexpr(cxxql::is_col_design_type_v<Col>) {
     return type(avalon::mp::identity<typename Col::type>{});
   } else {
     return type(avalon::mp::identity<typename Col::cxxqltype>{});

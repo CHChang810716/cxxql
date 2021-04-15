@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <cxxql/to_sql/utils.hpp>
 using namespace std::string_literals;
-using namespace cxxql::to_sql;
+using namespace cxxql::to_sql_ns;
 TEST(cxxql_to_sql, utils) {
   // EXPECT_EQ(append("a"s, "s"s, "asdf"s), "asasdf");
   EXPECT_EQ(

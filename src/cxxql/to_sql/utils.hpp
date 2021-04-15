@@ -1,7 +1,7 @@
 #pragma once
 #include <tuple>
 #include <string>
-namespace cxxql::to_sql {
+namespace cxxql::to_sql_ns {
 
 namespace detail { 
 template<class Delim, class Tuple, class Int, Int... i> 

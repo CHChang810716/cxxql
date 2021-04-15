@@ -11,7 +11,7 @@ auto trans(std::tuple<T...>&& t, Func&& func) {
 
 template<class Func, class... T>
 auto trans(const std::tuple<T...>& t, Func&& func) {
-  return trans([](auto& x){ return x;}, std::forward<Func>(func));
+  return trans([](auto& x){ return x;}(t), std::forward<Func>(func));
 }
 
 template<class T, template<class P> class FUNC>
