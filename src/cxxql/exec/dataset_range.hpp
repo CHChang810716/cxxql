@@ -7,6 +7,15 @@ struct dataset_range : public ranges::view_facade<
   dataset_range<Core>
 > {
   friend ranges::range_access;
+  using base_t = ranges::view_facade<
+    dataset_range<Core>
+  >;
+  template<class T>
+  dataset_range(T&& core)
+  : base_t()
+  , core_(std::forward<T>(core))
+  {}
+
   auto read() const {
     return core_.read();
   }
@@ -26,7 +35,7 @@ private:
 };
 template<class Core>
 auto make_dataset_range(Core&& core) {
-  return dataset_range<Core>{std::forward<Core>(core)};
+  return dataset_range<Core>(std::forward<Core>(core));
 }
 
 }

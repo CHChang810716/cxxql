@@ -6,8 +6,8 @@
 TEST(expr_condition, condition) {
   EXPECT_TRUE(1 == 1);
   EXPECT_FALSE(1 == 2);
-  EXPECT_TRUE((std::is_convertible_v<decltype(User.id), cxxql::expr::col_design>));
-  EXPECT_FALSE((std::is_convertible_v<bool, cxxql::expr::col_design>));
+  EXPECT_TRUE(cxxql::is_col_design_v(User.id));
+  EXPECT_FALSE(cxxql::is_col_design_type_v<bool>);
   EXPECT_FALSE((cxxql::expr::is_bin_expr_v<bool>));
   EXPECT_FALSE(cxxql::expr::is_bin_expr_v<int>);
   auto bexpr0 = User.id == Article.id;

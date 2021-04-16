@@ -1,9 +1,9 @@
 #pragma once
 #include <type_traits>
-namespace cxxql::expr {
-struct col_design {};
-
-}
+// namespace cxxql::expr {
+// struct col_design {};
+// 
+// }
 // namespace cxxql {
 // 
 // template<class T>

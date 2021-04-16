@@ -6,6 +6,14 @@
 #include <cxxql/expr.hpp>
 #include <iostream>
 TEST(exec_test, select_query) {
+  dummy_db db;
+  cxxql::exec(
+    db, 
+    cxxql::expr::select(
+      User.id, 
+      User.name
+    )
+  );
   // dummy_db db;
   // auto dset_range = cxxql::exec(
   //   db, 
