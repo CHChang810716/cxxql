@@ -12,11 +12,11 @@ auto exec(Driver& db, const expr::select_t<SelectArgs...>& expr) {
   using expr_t = expr::select_t<SelectArgs...>;
   using res_elem_t = typename expr_t::result_elem_t;
   auto sql_str = to_sql(db, expr);
-  auto iterator_core = db.select(sql_str, [expr]() {
+  auto&& iterator_core = db.select(sql_str, [expr]() {
     return expr.make_result_elem();
   });
   return exec_ns::make_dataset_range(
-    std::move(iterator_core)
+    std::forward<decltype(iterator_core)>(iterator_core)
   );
 }
 

@@ -8,6 +8,7 @@
 #include "condition.hpp"
 #include <avalon/lexical_cast.hpp>
 #include <avalon/mp/identity.hpp>
+#include <avalon/tuple/unique.hpp>
 namespace cxxql::expr {
 
 template<class ColDesign, class = std::enable_if_t<
@@ -39,20 +40,21 @@ struct select_result_elem_t<std::tuple<ColDesigns...>>
   using col_cxxqltype = typename std::tuple_element_t<i, col_d_tuple>::type;
 
 
-  auto set_from_strs(
+  auto& set_from_strs(
     avalon::mp::type_replace_t<ColDesigns, const std::string&>... strs
   ) {
     return set(
       avalon::lexical_cast<col_value_cxx_t<ColDesigns>>(strs)...
     );
   }
-  auto set(col_value_cxx_t<ColDesigns>&&... v) {
+  auto& set(col_value_cxx_t<ColDesigns>&&... v) {
     auto a = {set_col<ColDesigns>(std::move(v))...};
+    return *this;
   }
   template<class ColDesign>
-  auto set_col(col_value_cxx_t<ColDesign>&& v) {
+  auto& set_col(col_value_cxx_t<ColDesign>&& v) {
     static_cast<col_design_to_col_t<ColDesign>&>(*this).set_col(std::move(v));
-    return 0;
+    return *this;
   }
 private:
 };
@@ -102,8 +104,10 @@ struct select_t<Cols, Tables, empty_where> : public select_base_t<Cols, Tables, 
 template<class... RawCols>
 auto select(const RawCols&... raw_cols) {
   auto cols = std::make_tuple(raw_cols...);
-  auto tables = std::make_tuple(col_to_table(raw_cols)...);
-  return select_t<decltype(cols), decltype(tables)>{
+  auto _tables = std::make_tuple(col_to_table(raw_cols)...);
+  using tu = avalon::tuple::type_unique<decltype(_tables)>;
+  typename tu::type tables;
+  return select_t<decltype(cols), typename tu::type>{
     std::move(cols), 
     std::move(tables),
     empty_where{}

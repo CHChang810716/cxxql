@@ -14,7 +14,7 @@ std::string where(const Where& w) {
   if constexpr(std::is_same_v<Where, expr::empty_where>) {
     return "";
   } else {
-    return fmt::format("WHERE {}", bin_expr(w.expr));
+    return fmt::format(" WHERE {}", bin_expr(w.expr));
   }
 }
 
@@ -26,7 +26,7 @@ auto select(
   const std::string&    where_cond
 ) {
   return fmt::format(
-    "SELECT {} FROM {} {} ;",
+    "SELECT {} FROM {}{} ;",
     tuple_to_string(",", sel_cols),
     tuple_to_string(",", from_tables),
     where_cond
