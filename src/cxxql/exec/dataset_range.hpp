@@ -11,7 +11,6 @@ struct any_mem_holder {
 template<class T>
 struct any_mem_holder<T&> {
   using type = std::optional<std::reference_wrapper<T>>;
-  // using type = std::reference_wrapper<T>;
 };
 
 template<class T>

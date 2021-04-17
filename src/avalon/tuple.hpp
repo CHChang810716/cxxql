@@ -1,6 +1,6 @@
 #pragma once
 #include "tuple/trans.hpp"
-
+#include "tuple/unique.hpp"
 namespace avalon {
 
 template<class Tuple> struct is_tuple : public std::false_type {};

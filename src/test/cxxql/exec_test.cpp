@@ -7,21 +7,6 @@
 #include <iostream>
 #include <range/v3/all.hpp>
 #include <gmock/gmock.h>
-class c_string_range
-: public ranges::view_facade<c_string_range>
-{
-    friend ranges::range_access;
-    char const * sz_ = "";
-    char const read() const { return *sz_; }
-    bool equal(ranges::default_sentinel_t) const { return *sz_ == '\0'; }
-    void next() { ++sz_; }
-public:
-    c_string_range() = default;
-    explicit c_string_range(char const *sz) : sz_(sz)
-    {
-        assert(sz != nullptr);
-    }
-};
 TEST(exec_test, select_query) {
   using ::testing::Return;
   dummy_db db;

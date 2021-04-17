@@ -15,8 +15,8 @@
       void set_col(cxxtype&& v) { c = std::move(v); } \
       cxxtype           c; \
       const std::string __cxxql_name; \
-      decltype(tab)     __cxxql_table; \
-    } res {{}, #c, tab}; \
+      const auto& __cxxql_table() const { return t; } \
+    } res {{}, #c}; \
     return res; \
   }
 #define CXXQL_TAB_DOT_COL(t, c)  ,t.c

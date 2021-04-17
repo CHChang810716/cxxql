@@ -29,9 +29,9 @@ constexpr auto get_col_full_name = [](const auto& col) {
   using Col = std::remove_cv_t<decltype(col)>;
   if constexpr(cxxql::is_col_design_type_v<Col>) {
     auto c = __cxxql_col(col);
-    return get_table_name(c.__cxxql_table) + ("." + c.__cxxql_name);
+    return get_table_name(c.__cxxql_table()) + ("." + c.__cxxql_name);
   } else {
-    return get_table_name(col.__cxxql_table) + ("." + col.__cxxql_name);
+    return get_table_name(col.__cxxql_table()) + ("." + col.__cxxql_name);
   }
 };
 
@@ -45,9 +45,9 @@ constexpr auto col_design_to_col = [](const auto& col_dng) {
 template<class Col>
 auto& get_table_from_col(const Col& col) {
   if constexpr(cxxql::is_col_design_v(col)) {
-    return __cxxql_col(col).__cxxql_table;
+    return __cxxql_col(col).__cxxql_table();
   } else {
-    return col.__cxxql_table;
+    return col.__cxxql_table();
   }
 }
 

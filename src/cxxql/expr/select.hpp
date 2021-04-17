@@ -88,7 +88,7 @@ struct select_t : public select_base_t<Cols, Tables, Where> {
 template<class Cols, class Tables>
 struct select_t<Cols, Tables, empty_where> : public select_base_t<Cols, Tables, empty_where> {
   template<class... T>
-  auto where(bin_expr<T...>&& wexpr) const && {
+  auto where(bin_expr<T...>&& wexpr) const &&{
     return select_t<
       Cols,
       Tables,

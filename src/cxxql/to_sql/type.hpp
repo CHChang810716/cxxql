@@ -36,6 +36,17 @@ auto value(const T& v) {
   return std::to_string(v);
 }
 auto value(const std::string& str) {
+  if(str.find("'") != str.npos) {
+    std::string tmp;
+    for(auto& c : str) {
+      if(c == '\'') {
+        tmp.append("''");
+      } else {
+        tmp.push_back(c);
+      }
+    }
+    return fmt::format("'{}'", tmp);
+  }
   return fmt::format("'{}'", str);
 }
 
