@@ -51,6 +51,7 @@ TEST(to_sql_test, update) {
     dd,
     ce::update(User).set(User.id = 0, User.name = "John").where(User.id == 1)
   );
-  EXPECT_EQ(sql, "UPDATE User SET User.id = 0,User.name = 'John' WHERE (User.id = 1) ;");
+  std::cout << sql << std::endl;
+  EXPECT_EQ(sql, "UPDATE User SET id = 0,name = 'John' WHERE (User.id = 1) ;");
   
 }

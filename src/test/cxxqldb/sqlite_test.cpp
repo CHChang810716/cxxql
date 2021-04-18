@@ -29,6 +29,7 @@ TEST(sqlite, select) {
     ce::select(User.name, Article.title)
       .where(User.id == Article.author)
   );
+  std::size_t i = 0;
   for(auto&& entry : drng) {
     if(entry.title == "John's Work") {
       EXPECT_EQ(entry.name, "John");
@@ -39,6 +40,14 @@ TEST(sqlite, select) {
     if(entry.title == "Alex's TODO") {
       EXPECT_EQ(entry.name, "Alex");
     }
+    i ++;
   }
+  EXPECT_EQ(i, 3);
   db(ce::update(User).set(User.name = "Frank").where(User.id == 0));
+  i = 0;
+  for(auto&& entry : db(ce::select(User.name).where(User.id == 0))) {
+    EXPECT_EQ(entry.name, "Frank");
+    i++;
+  }
+  EXPECT_EQ(i, 1);
 }

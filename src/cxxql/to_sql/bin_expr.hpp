@@ -21,16 +21,21 @@ std::string bin_oper(const expr::bin_oper::type& op) {
   }
 }
 
-template<class T>
-std::string bin_expr(const T& expr, const char* format = "({} {} {})") {
+template<class T, class ColNameFunc>
+std::string bin_expr(
+  const T& expr, 
+  const ColNameFunc& col_name_func,
+  const char* format = "({} {} {})"
+) {
   if constexpr(expr::is_bin_expr_v<T>) {
     return fmt::format(format, 
-      bin_expr(expr.left()),
+      bin_expr(expr.left(), col_name_func, format),
       bin_oper(expr.oper),
-      bin_expr(expr.right())
+      bin_expr(expr.right(), col_name_func, format)
     );
   } else if constexpr(is_col_design_type_v<T>) {
-    return expr::get_col_full_name(expr);
+    auto res = col_name_func(expr);
+    return res;
   } else {
     return value(expr);
   }

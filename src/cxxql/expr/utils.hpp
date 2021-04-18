@@ -18,11 +18,13 @@ auto get_col_design_name(const ColDng& col_dng) {
 
 constexpr auto get_col_name = [](const auto& col) {
   using Col = std::remove_cv_t<decltype(col)>;
+  std::string res;
   if constexpr(cxxql::is_col_design_type_v<Col>) {
-    return __cxxql_col(col).__cxxql_name;
+    res = __cxxql_col(col).__cxxql_name;
   } else {
-    return col.__cxxql_name;
+    res = col.__cxxql_name;
   }
+  return res;
 };
 
 constexpr auto get_col_full_name = [](const auto& col) {
