@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
 #include <fmt/format.h>
-namespace to_sql_ns {
+namespace cxxql::to_sql_ns {
 
-template<class Driver, class Tab, class... ColElemStrs>
+template<class Driver, class Tab>
 std::string drop_table(
   Driver& driver, 
   const Tab& table,

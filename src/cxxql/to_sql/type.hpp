@@ -35,6 +35,7 @@ template<class T>
 auto value(const T& v) {
   return std::to_string(v);
 }
+
 auto value(const std::string& str) {
   if(str.find("'") != str.npos) {
     std::string tmp;
@@ -50,4 +51,7 @@ auto value(const std::string& str) {
   return fmt::format("'{}'", str);
 }
 
+auto value(const char* const& str) {
+  return value(std::string(str));
+}
 }

@@ -61,12 +61,7 @@ decltype(auto) make_bin_opnd(T&& o) {
     return cxxql::expr::bin_expr<decltype(cols)>{sym, std::move(cols)}; \
   }
 #define CXXQL_EXPR_BOP_MEM(op, sym) \
-  template<class CD0,  \
-    class C0Check = std::enable_if_t< \
-      (cxxql::is_col_design_type_v<CD0> || \
-        cxxql::expr::is_bin_expr_v<CD0>) \
-    > \
-  > \
+  template<class CD0> \
   auto operator op(const CD0& cd0) { \
     auto cols = std::make_tuple( \
       cxxql::expr::make_bin_opnd(*this), \

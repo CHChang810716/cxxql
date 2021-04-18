@@ -7,6 +7,7 @@
 #include "to_sql/select.hpp"
 #include "to_sql/insert_into.hpp"
 #include "to_sql/drop_table.hpp"
+#include "to_sql/update.hpp"
 
 namespace cxxql {
 
@@ -53,5 +54,18 @@ auto to_sql(Driver& driver, const cxxql::expr::insert_into_t<Table, Cols>& expr)
     avalon::tuple::trans(expr.col_values, to_str)
   );
 }
-
+template<class Driver, class Table, class ColASNs, class Where>
+auto to_sql(Driver& driver, const cxxql::expr::update_t<Table, ColASNs, Where>& expr) {
+  auto set_col_expr = [](const auto& expr) {
+    return to_sql_ns::update_set_col_expr(expr);
+  };
+  return to_sql_ns::update(
+    driver, 
+    expr::get_table_name(expr.table),
+    avalon::tuple::trans(
+      expr.set_cols, set_col_expr
+    ),
+    to_sql_ns::where(expr.cond)
+  );
+}
 }

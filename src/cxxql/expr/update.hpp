@@ -8,53 +8,53 @@
 #include "condition.hpp"
 #include <avalon/tuple.hpp>
 namespace cxxql::expr {
-
-template<class Table>
-struct update_pre0_t {
-  Table table;
+template<class Table, class SetCols, class Where = empty_where>
+struct update_base_t {
+  Table   table;
+  SetCols set_cols;
+  Where   cond;
 };
-template<
-  class Table, 
-  class ColASNs, 
-  class = std::enable_if_t<avalon::is_tuple_v<ColASNs>>
->
-struct update_pre1_t {
-  ColASNs col_asns;
+
+template<class Table, class SetCols, class Where = empty_where>
+struct update_t : public update_base_t<Table, SetCols, Where> {
 };
-template<class Table, class ColASNs, class Where = empty_where>
-struct update_t {
 
-  template<class... Exprs>
-  auto set(Exprs&&... exprs) {
-    return *this;
-  }
-
+template<class Table, class SetCols>
+struct update_t<Table, SetCols, empty_where> : public update_base_t<Table, SetCols, empty_where> {
   template<class... T>
-  auto where(bin_expr<T...>&& wexpr) const {
+  auto where(bin_expr<T...>&& wexpr) const &&{
     return update_t<
       Table,
-      ColASNs,
+      SetCols,
       where_t<T...>
     > {
-      table,
-      col_asns,
+      std::move(this->table),
+      std::move(this->set_cols),
       where_t<T...>{std::move(wexpr)}
     };
   }
-  Table     table;
-  ColASNs   col_asns;
-  Where     cond;
 };
 
-template<class... RawCols>
-auto update(const RawCols&... raw_cols) {
-  auto cols = std::make_tuple(raw_cols...);
-  auto tables = std::make_tuple(col_to_table(raw_cols)...);
-  return update_t<decltype(cols), decltype(tables)>{
-    std::move(cols), 
-    std::move(tables),
-    empty_where{}
-  };
+
+template<class Table>
+struct update_pre0_t {
+  template<class... Exprs>
+  auto set(Exprs&&... exprs) const &&{
+    // TODO: assign expression check
+    auto set_cols = std::make_tuple(std::forward<Exprs>(exprs)...);
+    return update_t<Table, decltype(set_cols)> {
+      std::move(this->table),
+      std::move(set_cols),
+      empty_where {}
+    };
+  }
+
+  Table table;
+};
+
+template<class Table>
+auto update(const Table& table) {
+  return update_pre0_t<const Table&> {table};
 }
     
 } // namespace cxxql::expr

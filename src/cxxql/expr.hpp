@@ -6,3 +6,4 @@
 #include "expr/delete.hpp"
 #include "expr/utils.hpp"
 #include "expr/condition.hpp"
+#include "expr/drop_table.hpp"

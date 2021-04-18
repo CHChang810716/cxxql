@@ -20,17 +20,11 @@ std::string bin_oper(const expr::bin_oper::type& op) {
       throw std::runtime_error(fmt::format("BUG: bin oper {} unable to convert to string", op));
   }
 }
-// template<class ColDesign>
-// std::enable_if_t<
-//   cxxql::is_col_design_type_v<ColDesign>,
-//   std::string
-// > bin_expr(const ColDesign& cd) {
-//   return cxxql::
-// }
+
 template<class T>
-std::string bin_expr(const T& expr) {
+std::string bin_expr(const T& expr, const char* format = "({} {} {})") {
   if constexpr(expr::is_bin_expr_v<T>) {
-    return fmt::format("({} {} {})", 
+    return fmt::format(format, 
       bin_expr(expr.left()),
       bin_oper(expr.oper),
       bin_expr(expr.right())
@@ -38,8 +32,8 @@ std::string bin_expr(const T& expr) {
   } else if constexpr(is_col_design_type_v<T>) {
     return expr::get_col_full_name(expr);
   } else {
-    return fmt::format("{}", expr);
+    return value(expr);
   }
-}
+};
 
 }

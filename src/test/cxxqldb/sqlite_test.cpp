@@ -3,15 +3,17 @@
 #include <cxxql/expr.hpp>
 #include "../cxxql/tab_user.hpp"
 #include "../cxxql/tab_article.hpp"
-#include <experimental/filesystem>
+#include <cxxql/ext/drop_table_if_exists.hpp>
+#include <cxxql/ext/create_table_if_not_exists.hpp>
 struct {
   const char* file_path = "test_sqlite.db";
 } sqlite_config;
 TEST(sqlite, select) {
   namespace ce = cxxql::expr;
-  std::remove(sqlite_config.file_path);
 
   cxxqldb::sqlite::db db(sqlite_config);
+  db(ce::drop_table_if_exists(User));
+  db(ce::drop_table_if_exists(Article));
   db(ce::create_table(User));
   db(ce::create_table(Article));
   db(ce::insert_into(User.id, User.name).values(0, "John"));
@@ -38,4 +40,5 @@ TEST(sqlite, select) {
       EXPECT_EQ(entry.name, "Alex");
     }
   }
+  db(ce::update(User).set(User.name = "Frank").where(User.id == 0));
 }
