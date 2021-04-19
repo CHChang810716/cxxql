@@ -83,31 +83,30 @@ private:
 
 template<class Cols, class Tables, class Where = empty_where>
 struct select_t : public select_base_t<Cols, Tables, Where> {
-};
-
-template<class Cols, class Tables>
-struct select_t<Cols, Tables, empty_where> : public select_base_t<Cols, Tables, empty_where> {
   template<class... T>
   auto where(bin_expr<T...>&& wexpr) const &&{
-    return select_t<
-      Cols,
-      Tables,
-      where_t<T...>
-    > {
-      std::move(this->cols),
-      std::move(this->tables),
-      where_t<T...>{std::move(wexpr)}
-    };
+    if constexpr(std::is_same_v<Where, empty_where>) {
+      return select_t<
+        Cols,
+        Tables,
+        where_t<T...>
+      > {
+        std::move(this->cols),
+        std::move(this->tables),
+        where_t<T...>{std::move(wexpr)}
+      };
+    }
   }
 };
+
 
 template<class... RawCols>
 auto select(const RawCols&... raw_cols) {
   auto cols = std::make_tuple(raw_cols...);
-  auto _tables = std::make_tuple(col_to_table(raw_cols)...);
-  using tu = avalon::tuple::type_unique<decltype(_tables)>;
+  auto col_tables = std::make_tuple(col_to_table(raw_cols)...);
+  using tu = avalon::tuple::type_unique<decltype(col_tables)>;
   typename tu::type tables;
-  return select_t<decltype(cols), typename tu::type>{
+  return select_t<decltype(cols), typename tu::type, empty_where>{
     std::move(cols), 
     std::move(tables),
     empty_where{}

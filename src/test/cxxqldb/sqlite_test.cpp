@@ -50,4 +50,11 @@ TEST(sqlite, select) {
     i++;
   }
   EXPECT_EQ(i, 1);
+  db(ce::delete_from_(User).where(User.id == 0));
+  i = 0;
+  for(auto&& entry : db(ce::select(User.name).where(User.id == 0))) {
+    i++;
+  }
+  EXPECT_EQ(i, 0);
+
 }

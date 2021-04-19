@@ -46,19 +46,19 @@ constexpr auto col_design_to_col = [](const auto& col_dng) {
 
 template<class Col>
 auto& get_table_from_col(const Col& col) {
-  if constexpr(cxxql::is_col_design_v(col)) {
+  if constexpr(is_col_design_type_v<Col>) {
     return __cxxql_col(col).__cxxql_table();
   } else {
     return col.__cxxql_table();
   }
 }
 
-struct dummy_table {};
+struct dummy_table_t {} dummy_table;
 
 template<class T>
 auto& col_to_table(const T& o) {
   if constexpr(std::is_same_v<T, std::string>) { // column specify in string, not ORM
-    return dummy_table {};
+    return dummy_table;
   } else {
     return get_table_from_col(o);
   }

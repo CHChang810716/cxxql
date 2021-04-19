@@ -8,6 +8,7 @@
 #include "to_sql/insert_into.hpp"
 #include "to_sql/drop_table.hpp"
 #include "to_sql/update.hpp"
+#include "to_sql/delete_from.hpp"
 
 namespace cxxql {
 
@@ -67,5 +68,12 @@ auto to_sql(Driver& driver, const cxxql::expr::update_t<Table, ColASNs, Where>& 
     ),
     to_sql_ns::where(expr.cond)
   );
+}
+template<class Driver, class Table, class Where>
+auto to_sql(Driver& driver, const cxxql::expr::delete_from_t<Table, Where>& expr) {
+  return to_sql_ns::delete_from_(driver, 
+    expr::get_table_name(expr.table),
+    to_sql_ns::where(expr.cond)
+  ); 
 }
 }

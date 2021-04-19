@@ -63,13 +63,5 @@ using type_unique = type_unique_impl<
   std::make_index_sequence<std::tuple_size_v<Tuple>>
 >;
 
-// template<class RTuple, class Tuple, class Int, Int... i>
-// auto unique_impl(Tuple&& tup, std::integer_sequence<Int, i...> is) {
-//   return RTuple{std::get<i>(tup)...};
-// }
-// template<class Tuple>
-// auto unique(Tuple&& tuple) {
-//   using unique_pack = type_unique<std::remove_reference_t<Tuple>>;
-// }
   
 } // namespace avalon::tuple 
