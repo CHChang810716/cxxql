@@ -5,13 +5,14 @@
 
 struct {
   struct {
-    CXXQL_COL(cxxql::bigint)
-    bool is_primary      = true;
+    CXXQL_COL(cxxql::integer)
+    bool primary_key     = true;
     bool auto_increment  = true;
   } id;
   struct {
     CXXQL_COL(cxxql::varchar<255>)
-    bool          is_unique      = true;
+    bool          not_null       = true;
+    bool          unique         = true;
     std::string   default_value  = "John Doe";
   } name;
 } User;

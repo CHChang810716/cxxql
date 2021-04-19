@@ -3,6 +3,7 @@
 #include <avalon/mp/identity.hpp>
 #include <cxxql/type.hpp>
 #include <fmt/format.h>
+#include <cxxql/expr/col_design.hpp>
 #define CXXQL_TYPE_TO_SQL(T, expr) \
   std::string type(avalon::mp::identity<T> t) { \
     return expr; \

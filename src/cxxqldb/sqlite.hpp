@@ -7,6 +7,8 @@
 #include <avalon/mp/identity.hpp>
 #include <functional>
 #include <avalon/defer.hpp>
+#include <string>
+#include <iostream>
 
 namespace cxxqldb::sqlite {
 
@@ -88,6 +90,7 @@ struct db : public cxxql::db<db> {
   }
 
   auto exec(const std::string& sql) {
+    std::cout << "exec :" << sql << std::endl;
     char* err_msg = nullptr;
     auto rc = sqlite3_exec(db_, sql.c_str(), 0, 0, &err_msg);
     if(rc != SQLITE_OK) {
@@ -102,6 +105,26 @@ private:
   sqlite3* db_;
 };
 
+}
+#include <cxxql/to_sql/create_table.hpp>
+namespace cxxql::to_sql_ns {
 
+template<class Tab, class ColDesign>
+std::string create_table_col(
+  cxxqldb::sqlite::db& driver, 
+  const Tab& table,
+  const std::string& col_name,
+  const std::string& col_type,
+  const ColDesign& col_design
+) {
+  auto basic = default_create_table_col(driver, table, col_name, col_type, col_design);
+  if constexpr(has_auto_increment_v<ColDesign>) {
+    if(col_design.auto_increment) {
+      basic += " AUTOINCREMENT";
+    }
+  }
+  return basic;
+}
 
 }
+#include <cxxql/to_sql.hpp>

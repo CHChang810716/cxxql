@@ -5,18 +5,16 @@
 
 struct {
   struct {
-    CXXQL_COL(cxxql::bigint)
-    bool is_primary      = true;
+    CXXQL_COL(cxxql::integer)
+    bool primary_key     = true;
     bool auto_increment  = true;
   } id;
   struct {
     CXXQL_COL(cxxql::bigint)
-    bool is_primary      = true;
-    bool auto_increment  = true;
   } author;
   struct {
     CXXQL_COL(cxxql::varchar<255>)
-    bool is_unique       = true;
+    bool unique          = true;
   } title;
 } Article;
 CXXQL_TABLE(Article, id, author, title)

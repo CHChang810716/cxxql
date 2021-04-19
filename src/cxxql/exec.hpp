@@ -1,8 +1,10 @@
 #pragma once
 #include "expr.hpp"
-#include "to_sql.hpp"
 #include "exec/dataset_range.hpp"
 namespace cxxql {
+
+template<class Driver, class Expr>
+std::string to_sql(Driver& db, const Expr& expr);
 
 template<class Driver, class Expr>
 auto exec(Driver& db, const Expr& expr) {
@@ -20,7 +22,5 @@ auto exec(Driver& db, const expr::select_t<SelectArgs...>& expr) {
     std::forward<decltype(iterator_core)>(iterator_core)
   );
 }
-
-
 
 }

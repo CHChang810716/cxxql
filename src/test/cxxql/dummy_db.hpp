@@ -24,3 +24,4 @@ struct dummy_db {
     return dr;
   }
 };
+#include <cxxql/to_sql.hpp>

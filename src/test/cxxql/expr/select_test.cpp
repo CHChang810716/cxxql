@@ -16,7 +16,7 @@ TEST(expr_select, select) {
   EXPECT_EQ(re.id, 52);
   EXPECT_EQ(re.name, "Sam");
   using result_elem_t = decltype(re);
-  EXPECT_TRUE((std::is_same_v<result_elem_t::col_cxxtype<0>, std::int64_t>));
+  EXPECT_TRUE((std::is_same_v<result_elem_t::col_cxxtype<0>, std::int32_t>));
   EXPECT_TRUE((std::is_same_v<result_elem_t::col_cxxtype<1>, std::string>));
 }
 TEST(expr_select, select_where) {
