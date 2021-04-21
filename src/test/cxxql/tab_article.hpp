@@ -1,6 +1,5 @@
 #pragma once
 #include <cstdint>
-#include <cxxql/type.hpp>
 #include <cxxql/table.hpp>
 
 struct {

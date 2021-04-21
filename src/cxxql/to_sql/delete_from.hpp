@@ -10,7 +10,7 @@
 namespace cxxql::to_sql_ns {
 
 template<class Driver>
-auto delete_from_(
+auto delete_from(
   Driver& driver, 
   const std::string&  table,
   const std::string&  where_cond

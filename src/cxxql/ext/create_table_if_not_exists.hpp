@@ -40,6 +40,7 @@ auto to_sql(Driver& driver, const cxxql::expr::create_table_if_not_exists_t<Tabl
     expr::get_table_name(expr.table)
   );
 }
-  
-} // namespace cxxql
 
+using expr::create_table_if_not_exists;
+
+} // namespace cxxql

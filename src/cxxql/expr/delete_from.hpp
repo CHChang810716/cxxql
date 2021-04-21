@@ -33,7 +33,7 @@ struct delete_from_t : public delete_from_base_t<Table, Where> {
 
 
 template<class Table>
-auto delete_from_(const Table& table) {
+auto delete_from(const Table& table) {
   return delete_from_t<const Table&, empty_where>{
     table,
     empty_where{}

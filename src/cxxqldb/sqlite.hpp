@@ -1,14 +1,13 @@
 #pragma once
-#include <sqlite3.h>
-#include <stdexcept>
-#include <cxxql/type.hpp>
-#include <utility>
-#include <cxxql/db.hpp>
-#include <avalon/mp/identity.hpp>
-#include <functional>
-#include <avalon/defer.hpp>
-#include <string>
+#include "injection.hpp"
 #include <iostream>
+#include <stdexcept>
+#include <utility>
+#include <functional>
+#include <sqlite3.h>
+#include <avalon/mp/identity.hpp>
+#include <avalon/defer.hpp>
+#include <cxxql.hpp>
 
 namespace cxxqldb::sqlite {
 
@@ -67,8 +66,8 @@ private:
   sqlite3_stmt* stmt_ {nullptr};
 };
 
-struct db : public cxxql::db<db> {
-  template<class Config>
+template<class Config>
+struct db : public cxxql::db<db<Config>> {
   db(Config&& config) {
     sqlite3_open(config.file_path, &db_);
     if( db_ == nullptr ) {
@@ -80,6 +79,9 @@ struct db : public cxxql::db<db> {
   }
   template<class ResultElem>
   auto select(const std::string& sql) {
+    if(dbglog) {
+      dbglog(fmt::format("exec: {}", sql));
+    }
     sqlite3_stmt* stmt;
     auto ec = sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, nullptr);
     if(ec != SQLITE_OK) {
@@ -90,7 +92,9 @@ struct db : public cxxql::db<db> {
   }
 
   auto exec(const std::string& sql) {
-    std::cout << "exec :" << sql << std::endl;
+    if(dbglog) {
+      dbglog(fmt::format("exec: {}", sql));
+    }
     char* err_msg = nullptr;
     auto rc = sqlite3_exec(db_, sql.c_str(), 0, 0, &err_msg);
     if(rc != SQLITE_OK) {
@@ -101,30 +105,12 @@ struct db : public cxxql::db<db> {
     }
     return rc;
   }
+  std::function<void(const std::string&)> dbglog;
 private:
   sqlite3* db_;
 };
-
+template<class Config>
+auto make_db(Config&& config) {
+  return db<Config>{std::forward<Config>(config)};
 }
-#include <cxxql/to_sql/create_table.hpp>
-namespace cxxql::to_sql_ns {
-
-template<class Tab, class ColDesign>
-std::string create_table_col(
-  cxxqldb::sqlite::db& driver, 
-  const Tab& table,
-  const std::string& col_name,
-  const std::string& col_type,
-  const ColDesign& col_design
-) {
-  auto basic = default_create_table_col(driver, table, col_name, col_type, col_design);
-  if constexpr(has_auto_increment_v<ColDesign>) {
-    if(col_design.auto_increment) {
-      basic += " AUTOINCREMENT";
-    }
-  }
-  return basic;
 }
-
-}
-#include <cxxql/to_sql.hpp>

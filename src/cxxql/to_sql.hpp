@@ -71,7 +71,7 @@ auto to_sql(Driver& driver, const cxxql::expr::update_t<Table, ColASNs, Where>& 
 }
 template<class Driver, class Table, class Where>
 auto to_sql(Driver& driver, const cxxql::expr::delete_from_t<Table, Where>& expr) {
-  return to_sql_ns::delete_from_(driver, 
+  return to_sql_ns::delete_from(driver, 
     expr::get_table_name(expr.table),
     to_sql_ns::where(expr.cond)
   ); 

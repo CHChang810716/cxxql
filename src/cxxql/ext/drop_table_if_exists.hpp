@@ -40,6 +40,8 @@ auto to_sql(Driver& driver, const cxxql::expr::drop_table_if_exists_t<Table>& ex
     expr::get_table_name(expr.table)
   );
 }
+
+using expr::drop_table_if_exists;
   
 } // namespace cxxql
 

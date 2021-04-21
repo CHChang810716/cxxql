@@ -54,13 +54,13 @@ TEST(to_sql_test, update) {
   std::cout << sql << std::endl;
   EXPECT_EQ(sql, "UPDATE User SET id = 0,name = 'John' WHERE (User.id = 1) ;");
 }
-TEST(to_sql_test, delete_from_) {
+TEST(to_sql_test, delete_from) {
   namespace ce = cxxql::expr;
   namespace cq = cxxql;
   dummy_driver dd;
   auto sql = cq::to_sql(
     dd,
-    ce::delete_from_(User).where(User.id == 1)
+    ce::delete_from(User).where(User.id == 1)
   );
   std::cout << sql << std::endl;
   EXPECT_EQ(sql, "DELETE FROM User WHERE (User.id = 1) ;");
