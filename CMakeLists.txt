@@ -13,13 +13,14 @@ HunterGate(
     FILEPATH ${CMAKE_CURRENT_LIST_DIR}/cmake/hunter_config.cmake
 )
 
-project(CppProjectTemplate
+project(cxxql
     LANGUAGES C CXX 
     VERSION 0.1.0.0
 )
 option(BUILD_TEST   "Build project with test"   OFF)
 option(INSTALL_DEPS "Install dependensies"      OFF)
-option(USE_SQLITE   "Use sqlite"                OFF)
+option(USE_SQLITE   "Build with SQLite3 API"    OFF)
+option(USE_PGSQL    "Build with PostgreSQL API" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 

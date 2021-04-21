@@ -6,7 +6,7 @@
   template<class Target> \
   struct has_##mem { \
     template<class... T> \
-    static std::false_type check (T&&...) {} \
+    static std::false_type check (T&&...) { return std::false_type{}; } \
     template<class T> \
     static auto check(T o) -> typename std::is_same< \
       decltype(o.mem), \
