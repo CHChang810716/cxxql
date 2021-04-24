@@ -1,6 +1,7 @@
 #pragma once
 #include <tuple>
 #include <string>
+#include <fmt/format.h>
 namespace cxxql::to_sql_ns {
 
 namespace detail { 
@@ -44,6 +45,22 @@ std::string tuple_to_string(
       >()
     );
   }
+}
+
+template<class Driver, class Str>
+auto table_id(Driver& driver, const Str& name) {
+  return name;
+}
+template<class Driver, class Str>
+auto col_id(Driver& driver, const Str& token) {
+  return token;
+}
+template<class Driver, class ColToken>
+auto col_full_id(Driver& driver, const ColToken& token) {
+  return fmt::format("{}.{}", 
+    table_id(driver, token.table),
+    col_id(driver, token.col)
+  );
 }
   
 } // namespace cxxql::to_sql

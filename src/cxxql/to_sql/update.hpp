@@ -2,11 +2,14 @@
 #include <string>
 #include "bin_expr.hpp"
 #include <iostream>
+#include "utils.hpp"
 
 namespace cxxql::to_sql_ns {
-template<class Expr>
-auto update_set_col_expr(const Expr& expr) {
-  auto res = bin_expr(expr, cxxql::expr::get_col_name, "{} {} {}");
+template<class Driver, class Expr>
+auto update_set_col_expr(Driver& driver, const Expr& expr) {
+  auto res = bin_expr(expr, [&driver](const auto& str){
+    return col_id(driver, cxxql::expr::get_col_name(str));
+  }, "{} {} {}");
   return res;
 }
 template<class Driver, class SetCols>

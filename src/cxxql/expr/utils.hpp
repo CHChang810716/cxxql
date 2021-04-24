@@ -3,6 +3,7 @@
 #include <avalon/macro/foreach.hpp>
 #include <cxxql/type.hpp>
 #include "col_design.hpp"
+#include <fmt/format.h>
 
 namespace cxxql::expr {
 
@@ -27,13 +28,21 @@ constexpr auto get_col_name = [](const auto& col) {
   return res;
 };
 
+struct col_token {
+  std::string table;
+  std::string col;
+  auto general_dot_format() const {
+    return fmt::format("{}.{}", table, col);
+  }
+};
+
 constexpr auto get_col_full_name = [](const auto& col) {
   using Col = std::remove_cv_t<decltype(col)>;
   if constexpr(cxxql::is_col_design_type_v<Col>) {
     auto c = __cxxql_col(col);
-    return get_table_name(c.__cxxql_table()) + ("." + c.__cxxql_name);
+    return col_token {get_table_name(c.__cxxql_table()), c.__cxxql_name};
   } else {
-    return get_table_name(col.__cxxql_table()) + ("." + col.__cxxql_name);
+    return col_token {get_table_name(col.__cxxql_table()), col.__cxxql_name};
   }
 };
 

@@ -1,12 +1,15 @@
 #pragma once
+#include "injection.hpp"
 #include "config.hpp"
 #include "utils.hpp"
 #include <avalon/defer.hpp>
 #include "dataset_range.hpp"
+#include <cxxql/db.hpp>
 namespace cxxqldb::postgresql {
 
-struct connection {
-  connection(const config& cfg){
+template<class Config>
+struct connection : cxxql::db<connection<Config>>{
+  connection(Config&& cfg){
     std::string info;
     CXXQL_PG_PUSH_CONF_MEM(info, cfg, host);
     CXXQL_PG_PUSH_CONF_MEM(info, cfg, hostaddr);
@@ -47,9 +50,16 @@ struct connection {
       dbglog(fmt::format("exec: {}", sql));
     }
     auto* res = PQexec(conn_, sql.c_str());
-    auto holder = avalon::defer([res](){
-      PQclear(res);
-    });
+    auto ec = PQresultStatus(res);
+    if (ec != PGRES_TUPLES_OK) {
+      throw std::runtime_error(fmt::format(
+        "postgresql query(select) failed: {}, reason: {}", 
+        sql, PQerrorMessage(conn_)
+      ));
+    }
+    // auto holder = avalon::defer([res](){
+    //   PQclear(res);
+    // });
     return dataset_range<ResultElem>(res);
   }
   auto exec(const std::string& sql) {
@@ -62,15 +72,23 @@ struct connection {
     });
     auto ec = PQresultStatus(res);
     if(ec != PGRES_COMMAND_OK) {
-      throw std::runtime_error(fmt::format("postgresql query(command) failed: {}", sql));
+      throw std::runtime_error(fmt::format(
+        "postgresql query(command) failed: {}, reason: {}", 
+        sql, PQerrorMessage(conn_)
+      ));
     }
   }
   ~connection() {
     PQfinish(conn_);
   }
+  std::function<void(const std::string&)> dbglog;
 private:
   PGconn* conn_ {nullptr};
-  std::function<void(const std::string&)> dbglog;
 };
+
+template<class Config>
+auto make_db(Config&& config) {
+  return connection<Config>(std::forward<Config>(config));
+}
   
 } // namespace cxxqldb::postgresql

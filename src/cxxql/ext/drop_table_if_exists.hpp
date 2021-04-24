@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-
+#include <cxxql/to_sql/utils.hpp>
 namespace cxxql::expr {
 
 template<class Table>
@@ -37,7 +37,7 @@ template<class Driver, class Table>
 auto to_sql(Driver& driver, const cxxql::expr::drop_table_if_exists_t<Table>& expr) {
   return to_sql_ns::drop_table_if_exists(
     driver, expr.table, 
-    expr::get_table_name(expr.table)
+    to_sql_ns::table_id(driver, expr::get_table_name(expr.table))
   );
 }
 

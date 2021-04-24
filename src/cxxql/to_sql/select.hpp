@@ -9,12 +9,17 @@
 
 namespace cxxql::to_sql_ns {
 
-template<class Where>
-std::string where(const Where& w) {
+template<class Driver, class Where>
+std::string where(Driver& driver, const Where& w) {
   if constexpr(std::is_same_v<Where, expr::empty_where>) {
     return "";
   } else {
-    return fmt::format(" WHERE {}", bin_expr(w.expr, expr::get_col_full_name));
+    return fmt::format(" WHERE {}", bin_expr(
+      w.expr, 
+      [&](const auto& col) {
+        return col_full_id(driver, expr::get_col_full_name(col));
+      }
+    ));
   }
 }
 

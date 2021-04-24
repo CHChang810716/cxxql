@@ -1,6 +1,7 @@
 #pragma once
 #include <libpq-fe.h>
 #include <avalon/lexical_cast.hpp>
+#include <avalon/mp/identity.hpp>
 template<class ResultElem>
 struct dataset_range {
   using value_type = ResultElem;
@@ -9,12 +10,8 @@ struct dataset_range {
 
   dataset_range(PGresult* sel_res) {
     pg_res_ = sel_res;
-    rows_ = 0;
+    rows_ = PQntuples(pg_res_);
     row_i_ = 0;
-    auto ec = PQresultStatus(pg_res_);
-    if (ec == PGRES_TUPLES_OK) {
-      rows_ = PQntuples(res);
-    }
   }
 
   dataset_range() = default;
@@ -35,7 +32,7 @@ private:
   auto col_v() const {
     using cxxtype = typename value_type::template col_cxxtype<i>;
     auto value = avalon::lexical_cast<cxxtype>(
-      PQgetvalue(pg_res_, row_i_, i);
+      PQgetvalue(pg_res_, row_i_, i)
     );
     return value;
   }
