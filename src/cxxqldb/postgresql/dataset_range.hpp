@@ -2,15 +2,19 @@
 #include <libpq-fe.h>
 #include <avalon/lexical_cast.hpp>
 #include <avalon/mp/identity.hpp>
+#include "utils.hpp"
+
+namespace cxxqldb::postgresql {
+
 template<class ResultElem>
 struct dataset_range {
   using value_type = ResultElem;
   template<class T>
   using tid = avalon::mp::identity<T>;
 
-  dataset_range(PGresult* sel_res) {
-    pg_res_ = sel_res;
-    rows_ = PQntuples(pg_res_);
+  dataset_range(result_ptr sel_res) {
+    pg_res_ = std::move(sel_res);
+    rows_ = PQntuples(pg_res_.get());
     row_i_ = 0;
   }
 
@@ -32,7 +36,7 @@ private:
   auto col_v() const {
     using cxxtype = typename value_type::template col_cxxtype<i>;
     auto value = avalon::lexical_cast<cxxtype>(
-      PQgetvalue(pg_res_, row_i_, i)
+      PQgetvalue(pg_res_.get(), row_i_, i)
     );
     return value;
   }
@@ -42,7 +46,9 @@ private:
     re.set(col_v<i>()...);
   }
 
-  PGresult* pg_res_       {nullptr};
-  int       rows_         {-1};
-  int       row_i_        {-1};
+  result_ptr  pg_res_       {nullptr, result_deletor{}};
+  int         rows_         {-1};
+  int         row_i_        {-1};
 };
+
+}
