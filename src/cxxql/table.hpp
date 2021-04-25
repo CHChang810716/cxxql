@@ -10,9 +10,12 @@
   auto __cxxql_col(const decltype(t.c)& col) { \
     const auto& tab = t; \
     struct { \
-      using cxxqltype = typename decltype(t.c)::type; \
+      using design_t = decltype(t.c); \
+      using cxxqltype = typename design_t::type; \
       using cxxtype = cxxql::cxxtype_t<cxxqltype>; \
       void set_col(cxxtype&& v) { c = std::move(v); } \
+      cxxtype&        get_col() { return c; } \
+      const cxxtype&  get_col() const { return c; } \
       cxxtype           c; \
       const std::string __cxxql_name; \
       const auto& __cxxql_table() const { return t; } \

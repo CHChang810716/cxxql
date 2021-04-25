@@ -34,11 +34,25 @@ struct select_result_elem_t<std::tuple<ColDesigns...>>
   using col_d_tuple = std::tuple<ColDesigns...>;
 
   template<std::size_t i>
-  using col_cxxtype = col_value_cxx_t<std::tuple_element_t<i, col_d_tuple>>;
+  using col_d = std::tuple_element_t<i, col_d_tuple>;
 
   template<std::size_t i>
-  using col_cxxqltype = typename std::tuple_element_t<i, col_d_tuple>::type;
+  using col_t = col_design_to_col_t<col_d<i>>;
 
+  template<std::size_t i>
+  using col_cxxtype = col_value_cxx_t<col_d<i>>;
+
+  template<std::size_t i>
+  using col_cxxqltype = typename col_d<i>::type;
+
+  template<std::size_t i>
+  col_cxxtype<i>& get() {
+    return static_cast<col_t<i>&>(*this).get_col();
+  }
+  template<class CD>
+  auto& get_col(const CD& col_design) {
+    return static_cast<col_design_to_col_t<CD>&>(*this).get_col();
+  }
 
   auto& set_from_strs(
     avalon::mp::type_replace_t<ColDesigns, const std::string&>... strs

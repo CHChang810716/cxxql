@@ -27,4 +27,11 @@ TEST(expr_select, select_where) {
   auto re = expr.make_result_elem();
   re.id;
   re.name;
+  auto& id = re.template get<0>();
+  re.get_col(User.id);
+}
+TEST(expr_select, select_table_var) {
+  // auto ua = table_var(User);
+  // auto ub = table_var(User);
+  auto expr = cxxql::expr::select(User.id, User.name).where(User.name == "John");
 }
