@@ -99,7 +99,7 @@ int main() {
 ## Steps
 
 ```bash
->cd pixiu
+>cd 
 >mkdir build
 >cd build
 >cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../stage -DBUILD_TEST=ON
