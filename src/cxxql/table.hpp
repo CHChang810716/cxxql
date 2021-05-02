@@ -43,7 +43,8 @@
   bool is_table_var() const { return !table_var_name_.empty(); } \
   const std::string& table_var_name() const { return table_var_name_; } \
   template<class Str> void set_table_var_name(Str&& str) {table_var_name_ = std::forward<Str>(str);} \
-  private: std::string table_var_name_;
+  private: std::string table_var_name_; \
+  public:
 
 /*
 #define CXXQL_COL(t) \
