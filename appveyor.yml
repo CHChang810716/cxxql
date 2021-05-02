@@ -46,7 +46,7 @@ before_build:
 - ps: (Get-Item "${Env:WINDBG_DIR}\dbghelp.dll").VersionInfo
 - mkdir build
 - cd build
-- cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_TEST=ON -DCMAKE_INSTALL_PREFIX="..\stage" -DCMAKE_PREFIX_PATH="%MINGW_FULL_DIR%\opt"
+- cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_TEST=ON -DCMAKE_INSTALL_PREFIX="..\stage" -DCMAKE_PREFIX_PATH="%MINGW_FULL_DIR%\opt" -DUSE_SQLITE=ON
 
 build_script:
 - cmake --build . --target install
