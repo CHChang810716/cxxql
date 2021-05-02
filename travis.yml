@@ -1,0 +1,80 @@
+# Enable C++ support
+language: cpp
+
+#we are going to use containers
+sudo: false
+
+cache:
+  ccache: true
+  directories:
+    - $HOME/.ccache
+
+env:
+  global:
+    - USE_CCACHE=1
+    - CCACHE_COMPRESS=1
+    - CCACHE_MAXSIZE=200M
+    - CCACHE_CPP2=1
+
+
+matrix:
+  include:
+    - os: linux
+      dist: bionic
+      compiler: gcc
+      addons: &gcc7-bionic
+        apt:
+          sources: 
+            - sourceline: 'ppa:ubuntu-toolchain-r/test'
+            - sourceline: 'ppa:dluxen/cmake-backports'
+
+          packages: 
+            - cmake 
+            - g++-7
+
+      env: 
+        - COMPILER='ccache g++-7'
+
+#build process step #1
+before_install:
+  - mkdir build
+
+#build process step #2
+install:
+  - cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../stage -DBUILD_TEST=ON
+
+#build process step #3
+before_script:  
+  - ls -al
+
+#build process step #4
+script:
+   - cmake --build . --target install
+   - ctest -VV
+
+# #build process step #5a
+# after_success:
+#   - mkdir fld_after_success
+# 
+# #build process step #5b
+# after_failure:
+#   - mkdir fld_after_failure
+# 
+# #build process step #6
+# after_script:
+#   - mkdir fld_after_script
+
+
+#before we run the build
+# notifications: # set notification options
+#   email:
+#     recipients:
+#       - xxx@gmail.com
+# 
+#     # change is when the repo status goes from pass to fail or vice versa
+#     on_success: [change]
+#     on_failure: [change]
+#     
+#     # Or we could just enable/disable all email
+#     email: true
