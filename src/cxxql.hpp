@@ -10,6 +10,7 @@ using expr::drop_table;
 using expr::insert_into;
 using expr::select;
 using expr::update;
+using expr::table_var;
 
 }
 

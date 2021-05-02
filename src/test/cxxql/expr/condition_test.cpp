@@ -21,12 +21,12 @@ TEST(expr_condition, condition) {
   EXPECT_EQ(bexpr2.left().oper, cxxql::expr::bin_oper::EQ);
   EXPECT_EQ(bexpr2.left().left(), "asdf");
   EXPECT_EQ(cxxql::expr::get_col_full_name(
-    bexpr2.left().right()).general_dot_format(), "User.id"
-  );
+    bexpr2.left().right()
+  ).general_dot_format(), "User.id");
   EXPECT_EQ(bexpr2.right().oper, cxxql::expr::bin_oper::NE);
   EXPECT_EQ(cxxql::expr::get_col_full_name(
-    bexpr2.right().left()).general_dot_format(), "Article.id"
-  );
+    bexpr2.right().left()
+  ).general_dot_format(), "Article.id");
   EXPECT_EQ(bexpr2.right().right(), 0);
 
 }

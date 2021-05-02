@@ -4,13 +4,36 @@
 #include <cxxql/type.hpp>
 #include "col_design.hpp"
 #include <fmt/format.h>
+#include "table_var.hpp"
+
 
 namespace cxxql::expr {
+
+struct table_token {
+  std::string table_name;
+  std::string var_name;
+};
 
 constexpr auto get_table_name = [](const auto& tab) {
   using Tab = std::remove_cv_t<decltype(tab)>;
   return __cxxql_table_name(tab);
 };
+constexpr struct {
+  template<class Tab>
+  auto operator()(const Tab& tab) const {
+    return table_token{__cxxql_table_name(tab), ""};
+  }
+  template<class Tab>
+  auto operator()(const table_var_t<Tab>& tab) const {
+    return table_token{__cxxql_table_name(tab), tab.symbol};
+  }
+} get_table_full_name;
+// constexpr auto get_table_full_name = [](const auto& tab) {
+//   using Tab = std::remove_cv_t<decltype(tab)>;
+//   if constexpr (is_table_var_v<Tab>) {
+//   } else {
+//   }
+// };
 
 template<class ColDng>
 auto get_col_design_name(const ColDng& col_dng) {
@@ -29,20 +52,28 @@ constexpr auto get_col_name = [](const auto& col) {
 };
 
 struct col_token {
-  std::string table;
+  table_token table;
   std::string col;
   auto general_dot_format() const {
-    return fmt::format("{}.{}", table, col);
+    return fmt::format("{}.{}", table.table_name, col);
   }
 };
 
 constexpr auto get_col_full_name = [](const auto& col) {
   using Col = std::remove_cv_t<decltype(col)>;
+  auto lambda = [](const auto& cd, const auto& col) {
+    table_token tt{
+      get_table_name(col.__cxxql_table()),
+      cd.table_var_name()
+    };
+    return col_token {tt, col.__cxxql_name};
+  };
   if constexpr(cxxql::is_col_design_type_v<Col>) {
     auto c = __cxxql_col(col);
-    return col_token {get_table_name(c.__cxxql_table()), c.__cxxql_name};
+    return lambda(col, c);
   } else {
-    return col_token {get_table_name(col.__cxxql_table()), col.__cxxql_name};
+    const auto& cd = col.__cxxql_col_design();
+    return lambda(cd, col);
   }
 };
 

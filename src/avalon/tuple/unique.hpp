@@ -32,13 +32,17 @@ struct type_push_front<T, std::tuple<TT...>> {
 template<class T, class Tuple>
 using type_push_front_t = typename type_push_front<T, Tuple>::type;
 
-template<class Tuple, class IS>
+template<class Tuple, class IS, template<class...> class filter_t>
 struct type_unique_impl {};
 
-template<class T0, class... T, class Int, Int i0, Int... i>
-struct type_unique_impl<std::tuple<T0, T...>, std::integer_sequence<Int, i0, i...>> {
-  static constexpr bool __is_contain = is_contain_v<T0, T...>;
-  using __next = type_unique_impl<std::tuple<T...>, std::integer_sequence<Int, i...>>;
+template<class T0, class... T, class Int, Int i0, Int... i, template<class...> class filter_t>
+struct type_unique_impl<
+  std::tuple<T0, T...>, 
+  std::integer_sequence<Int, i0, i...>,
+  filter_t
+> {
+  static constexpr bool __is_contain = filter_t<T0, T...>::value;
+  using __next = type_unique_impl<std::tuple<T...>, std::integer_sequence<Int, i...>, filter_t>;
   using type = std::conditional_t<
     __is_contain,
     typename __next::type,
@@ -51,16 +55,17 @@ struct type_unique_impl<std::tuple<T0, T...>, std::integer_sequence<Int, i0, i..
   >;
 };
 
-template<class IS>
-struct type_unique_impl<std::tuple<>, IS> {
+template<class IS, template<class... T> class filter_t>
+struct type_unique_impl<std::tuple<>, IS, filter_t> {
   using type = std::tuple<>;
   using index = IS;
 };
 
-template<class Tuple>
+template<class Tuple, template<class...> class filter_t = is_contain>
 using type_unique = type_unique_impl<
   Tuple, 
-  std::make_index_sequence<std::tuple_size_v<Tuple>>
+  std::make_index_sequence<std::tuple_size_v<Tuple>>,
+  filter_t
 >;
 
   

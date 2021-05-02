@@ -8,7 +8,7 @@ TEST(cxxql_expr, table_expr) {
   EXPECT_EQ(get_table_name(User), "User");
   EXPECT_EQ(get_col_design_name(User.id), "id");
   auto col_token = get_col_full_name(User.id);
-  EXPECT_EQ(col_token.table, "User");
+  EXPECT_EQ(col_token.table.table_name, "User");
   EXPECT_EQ(col_token.col, "id");
   EXPECT_EQ(col_token.general_dot_format(), "User.id");
 

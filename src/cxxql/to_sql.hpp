@@ -42,8 +42,8 @@ auto to_sql(Driver& driver, const cxxql::expr::select_t<Cols, Tables, Where>& ex
     avalon::tuple::trans(expr.cols, [&driver](const auto& col) {
       return to_sql_ns::col_full_id(driver, expr::get_col_full_name(col));
     }),
-    avalon::tuple::trans(expr.tables, [&driver](const auto& str) {
-      return to_sql_ns::table_id(driver, expr::get_table_name(str));
+    avalon::tuple::trans(expr.tables, [&driver](const auto& table) {
+      return to_sql_ns::table_full_id(driver, expr::get_table_full_name(table));
     }),
     to_sql_ns::where(driver, expr.cond)
   ); 

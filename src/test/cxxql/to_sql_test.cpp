@@ -66,3 +66,22 @@ TEST(to_sql_test, delete_from) {
   EXPECT_EQ(sql, "DELETE FROM User WHERE (User.id = 1) ;");
   
 }
+auto __cxxql_table_cols2(const decltype(User)& t) {
+  return avalon::make_tuple(t.id, t.name);
+}
+auto __cxxql_table_cols2(decltype(User)& t) {
+  return avalon::make_tuple(t.id, t.name);
+}
+TEST(to_sql_test, select_table_var) {
+  namespace ce = cxxql::expr;
+  namespace cq = cxxql;
+  dummy_driver dd;
+  auto ua = cxxql::expr::table_var(User, "a");
+  auto ab = cxxql::expr::table_var(Article, "b");
+  // std::cout << ua.id.table_var_name() << std::endl;
+  auto sql = cq::to_sql(
+    dd, ce::select(ua.name, ab.author).from(ua, ab).where(ua.id == ab.author)
+  );
+  std::cout << sql << std::endl;
+  EXPECT_EQ(sql, "SELECT a.name,b.author FROM User a,Article b WHERE (a.id = b.author) ;");
+}

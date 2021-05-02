@@ -8,3 +8,4 @@
 #include "expr/condition.hpp"
 #include "expr/drop_table.hpp"
 #include "expr/delete_from.hpp"
+#include "expr/table_var.hpp"

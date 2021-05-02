@@ -18,12 +18,10 @@ auto db_test(DB&& db) {
     .values(1, "John's Work"));
   db(cxxql::insert_into(Article.author, Article.title)
     .values(3, "Alex's TODO"));
-
-  auto drng = db(
+  auto&& drng = db(
     cxxql::select(User.name, Article.title)
       .where(User.id == Article.author)
   );
-
   std::size_t i = 0;
   for(auto&& entry : drng) {
     if(entry.title == "John's Work") {
@@ -52,4 +50,13 @@ auto db_test(DB&& db) {
   }
   EXPECT_EQ(i, 0);
 
+  auto user_a = cxxql::table_var(User);
+  auto article_b = cxxql::table_var(Article);
+  for(auto&& entry : db(
+    cxxql::select(user_a.name, article_b.title)
+      .from(user_a, article_b)
+      .where(user_a.id == article_b.author)
+  )) {
+    std::cout << entry.name << '\t' << entry.title << '\n';
+  }
 }

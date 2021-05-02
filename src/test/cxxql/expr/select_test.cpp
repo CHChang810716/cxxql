@@ -1,6 +1,7 @@
 #include <cxxql/expr/select.hpp>
 #include <gtest/gtest.h>
 #include "../tab_user.hpp"
+#include <cxxql/expr/table_var.hpp>
 
 TEST(expr_select, select) {
   auto expr = cxxql::expr::select(User.id, User.name);
@@ -31,7 +32,7 @@ TEST(expr_select, select_where) {
   re.get_col(User.id);
 }
 TEST(expr_select, select_table_var) {
-  // auto ua = table_var(User);
-  // auto ub = table_var(User);
-  auto expr = cxxql::expr::select(User.id, User.name).where(User.name == "John");
+  auto ua = cxxql::expr::table_var(User);
+  auto ub = cxxql::expr::table_var(User);
+  auto expr = cxxql::expr::select(ua.id, ub.name).where(ua.name == "John");
 }

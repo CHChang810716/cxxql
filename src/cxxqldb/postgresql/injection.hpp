@@ -7,12 +7,17 @@ template<class Config> struct connection;
 }
 
 namespace cxxql::to_sql_ns {
-template<class Config, class Str>
-auto table_id(
+template<class Config, class TName>
+std::string table_id(
   cxxqldb::postgresql::connection<Config>& db,
-  const Str& name
+  const TName& table_name, 
+  const std::string& var_name = ""
 ) {
-  return fmt::format("\"{}\"", name);
+  if(var_name.empty()) {
+    return fmt::format("\"{}\"", table_name);
+  } else {
+    return var_name;
+  }
 }
 template<class Config, class Token>
 auto col_id(

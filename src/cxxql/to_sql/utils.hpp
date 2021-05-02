@@ -47,9 +47,28 @@ std::string tuple_to_string(
   }
 }
 
-template<class Driver, class Str>
-auto table_id(Driver& driver, const Str& name) {
-  return name;
+template<class Driver, class TName>
+std::string table_id(
+  Driver& driver, 
+  const TName& table_name, 
+  const std::string& var_name = ""
+) {
+  if(var_name.empty()) {
+    return table_name;
+  } else {
+    return var_name;
+  }
+}
+template<class Driver, class Token>
+auto table_full_id(Driver& driver, const Token& token) {
+  if(token.var_name.empty()) {
+    return table_id(driver, token.table_name);
+  } else {
+    return fmt::format("{} {}", 
+      table_id(driver, token.table_name),
+      token.var_name
+    );
+  }
 }
 template<class Driver, class Str>
 auto col_id(Driver& driver, const Str& token) {
@@ -57,8 +76,9 @@ auto col_id(Driver& driver, const Str& token) {
 }
 template<class Driver, class ColToken>
 auto col_full_id(Driver& driver, const ColToken& token) {
+  auto& table = token.table;
   return fmt::format("{}.{}", 
-    table_id(driver, token.table),
+    table_id(driver, table.table_name, table.var_name),
     col_id(driver, token.col)
   );
 }
