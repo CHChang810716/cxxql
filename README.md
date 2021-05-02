@@ -1,5 +1,5 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/b4745dwte80u73je/branch/master?svg=true)](https://ci.appveyor.com/project/CHChang810716/cxxql/branch/master)
-[![Build Status](https://travis-ci.org/CHChang810716/pixiu.svg?branch=master)](https://travis-ci.org/CHChang810716/cxxql)
+[![appveyor](https://ci.appveyor.com/api/projects/status/ygi0nxl64khq6ipg/branch/master?svg=true)](https://ci.appveyor.com/project/CHChang810716/cxxql/branch/master)
+![github workflow](https://github.com/CHChang810716/cxxql/actions/workflows/cmake.yml/badge.svg)
 
 # Intro
 
